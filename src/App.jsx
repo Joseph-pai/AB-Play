@@ -89,7 +89,15 @@ function App() {
   }
 
   return (
-    <div style={{ width: '100%', maxWidth: '480px', padding: '20px', display: 'flex', flexDirection: 'column', height: '100vh', margin: '0 auto' }}>
+    <div style={{
+      width: '100%',
+      maxWidth: '600px',
+      padding: '20px',
+      display: 'flex',
+      flexDirection: 'column',
+      minHeight: '100vh',
+      margin: '0 auto'
+    }}>
       <header style={{ textAlign: 'center', marginBottom: '10px', zIndex: 10, marginTop: '20px' }}>
         <h1 style={{ fontFamily: 'Outfit, sans-serif', fontSize: '2.5rem', fontWeight: 700, textShadow: '0 4px 10px rgba(0,0,0,0.2)' }}>
           Glass Guess
