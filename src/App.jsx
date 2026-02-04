@@ -86,8 +86,8 @@ function App() {
                 1A1B 數字推理遊戲 Number Logic Game
               </p>
             </header>
-            <GameRules />
             <ModeSelector onSelectMode={handleModeSelect} />
+            <GameRules />
           </div>
         )}
 
