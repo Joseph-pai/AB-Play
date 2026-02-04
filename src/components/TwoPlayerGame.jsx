@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import confetti from 'canvas-confetti'
 import InputGrid from './InputGrid'
 import { calculateResult } from '../utils/gameLogic'
@@ -16,6 +16,15 @@ export default function TwoPlayerGame({ difficulty, onBack }) {
     const [playerBInput, setPlayerBInput] = useState(Array(difficulty).fill(''))
     const [winner, setWinner] = useState(null)
     const [setupPlayer, setSetupPlayer] = useState('A')
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 768)
+        }
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
 
     const handleSecretSubmit = () => {
         const secret = setupPlayer === 'A' ? playerASecret : playerBSecret
@@ -118,7 +127,7 @@ export default function TwoPlayerGame({ difficulty, onBack }) {
                 <button onClick={onBack} className="glass-btn" style={{ position: 'absolute', left: '20px', top: '20px', padding: '8px 16px', fontSize: '0.9rem' }}>
                     ← Back
                 </button>
-                <h1 style={{ fontSize: '2.5rem', fontWeight: 700, textShadow: '0 4px 10px rgba(0,0,0,0.2)' }}>
+                <h1 style={{ fontSize: 'clamp(1.8rem, 5vw, 2.5rem)', fontWeight: 700, textShadow: '0 4px 10px rgba(0,0,0,0.2)' }}>
                     Two Player Mode
                 </h1>
                 <p style={{ fontSize: '0.9rem', opacity: 0.8, marginTop: '5px' }}>{difficulty} Digits</p>
@@ -126,7 +135,7 @@ export default function TwoPlayerGame({ difficulty, onBack }) {
 
             {phase === 'setup' && (
                 <div className="glass-panel" style={{ padding: '30px', textAlign: 'center' }}>
-                    <h2 style={{ fontSize: '1.8rem', marginBottom: '20px' }}>
+                    <h2 style={{ fontSize: 'clamp(1.3rem, 4vw, 1.8rem)', marginBottom: '20px' }}>
                         Player {setupPlayer}: Set Your Secret Number
                     </h2>
                     <p style={{ marginBottom: '20px', opacity: 0.8 }}>
@@ -145,9 +154,13 @@ export default function TwoPlayerGame({ difficulty, onBack }) {
             )}
 
             {phase === 'playing' && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+                    gap: '20px'
+                }}>
                     <div className="glass-panel" style={{ padding: '20px', opacity: currentPlayer === 'A' ? 1 : 0.5 }}>
-                        <h3 style={{ fontSize: '1.5rem', marginBottom: '15px', textAlign: 'center' }}>
+                        <h3 style={{ fontSize: 'clamp(1.2rem, 3vw, 1.5rem)', marginBottom: '15px', textAlign: 'center' }}>
                             Player A {currentPlayer === 'A' && '👈'}
                         </h3>
                         <p style={{ textAlign: 'center', marginBottom: '10px', fontSize: '0.9rem' }}>
@@ -175,7 +188,7 @@ export default function TwoPlayerGame({ difficulty, onBack }) {
                     </div>
 
                     <div className="glass-panel" style={{ padding: '20px', opacity: currentPlayer === 'B' ? 1 : 0.5 }}>
-                        <h3 style={{ fontSize: '1.5rem', marginBottom: '15px', textAlign: 'center' }}>
+                        <h3 style={{ fontSize: 'clamp(1.2rem, 3vw, 1.5rem)', marginBottom: '15px', textAlign: 'center' }}>
                             Player B {currentPlayer === 'B' && '👈'}
                         </h3>
                         <p style={{ textAlign: 'center', marginBottom: '10px', fontSize: '0.9rem' }}>
@@ -206,10 +219,10 @@ export default function TwoPlayerGame({ difficulty, onBack }) {
 
             {phase === 'finished' && (
                 <div className="glass-panel animate-pop" style={{ padding: '40px', textAlign: 'center' }}>
-                    <h2 style={{ fontSize: '3rem', marginBottom: '20px', color: 'var(--color-yellow)' }}>
+                    <h2 style={{ fontSize: 'clamp(2rem, 6vw, 3rem)', marginBottom: '20px', color: 'var(--color-yellow)' }}>
                         🎉 Player {winner} Wins!
                     </h2>
-                    <p style={{ fontSize: '1.2rem', marginBottom: '30px' }}>
+                    <p style={{ fontSize: 'clamp(1rem, 3vw, 1.2rem)', marginBottom: '30px' }}>
                         Player A's secret: <span style={{ fontWeight: 'bold', color: '#FF8CA4' }}>{playerASecret.join('')}</span><br />
                         Player B's secret: <span style={{ fontWeight: 'bold', color: '#FF8CA4' }}>{playerBSecret.join('')}</span>
                     </p>
