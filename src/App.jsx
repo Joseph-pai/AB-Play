@@ -1,137 +1,211 @@
-import { useState, useEffect } from 'react'
-import confetti from 'canvas-confetti'
-import InputGrid from './components/InputGrid'
-import HistoryList from './components/HistoryList'
-import VictoryModal from './components/VictoryModal'
+import { useState } from 'react'
+import ModeSelector from './components/ModeSelector'
+import SinglePlayerGame from './components/SinglePlayerGame'
+import TwoPlayerGame from './components/TwoPlayerGame'
+import GameHistory from './components/GameHistory'
+import HistoryDetail from './components/HistoryDetail'
 import SlothMascot from './components/SlothMascot'
-import { generateSecret, calculateResult } from './utils/gameLogic'
 import './styles/glass.css'
+import slothBg from './assets/sloth-background.png'
 
 function App() {
+  const [view, setView] = useState('menu') // 'menu', 'single', 'two-player', 'history', 'detail'
   const [difficulty, setDifficulty] = useState(4)
-  const [secret, setSecret] = useState(() => generateSecret(4))
-  const [input, setInput] = useState(Array(4).fill(''))
-  const [history, setHistory] = useState([])
-  const [isWon, setIsWon] = useState(false)
-  const [totalWins, setTotalWins] = useState(() => Number(localStorage.getItem('glass-guess-wins')) || 0)
+  const [detailGameId, setDetailGameId] = useState(null)
 
-  // Debugging
-  useEffect(() => {
-    console.log('Secret (Debug):', secret)
-  }, [secret])
-
-  const handleDifficultyChange = (e) => {
-    const val = Number(e.target.value)
-    if (val === difficulty) return
-    setDifficulty(val)
-    restartGame(val)
-  }
-
-  const restartGame = (len = difficulty) => {
-    setSecret(generateSecret(len))
-    setHistory([])
-    setIsWon(false)
-    setInput(Array(len).fill(''))
-  }
-
-  const handleSubmit = () => {
-    if (input.some(d => d === '')) return // Not full
-
-    // Check duplicates
-    const uniqueDigits = new Set(input)
-    if (uniqueDigits.size !== difficulty) {
-      alert(`Please enter ${difficulty} unique digits!`)
-      return
-    }
-
-    const guessStr = input.join('')
-    const res = calculateResult(secret, guessStr)
-
-    const newHistory = [...history, { guess: guessStr, result: res }]
-    setHistory(newHistory)
-    setInput(Array(difficulty).fill(''))
-
-    if (res === `${difficulty}A0B`) {
-      handleWin()
+  const handleModeSelect = (mode) => {
+    if (mode === 'single') {
+      setView('difficulty-single')
+    } else if (mode === 'two-player') {
+      setView('difficulty-two')
+    } else if (mode === 'history') {
+      setView('history')
     }
   }
 
-  const handleWin = () => {
-    setIsWon(true)
-    const newWins = totalWins + 1
-    setTotalWins(newWins)
-    localStorage.setItem('glass-guess-wins', newWins)
+  const handleDifficultySelect = (diff, mode) => {
+    setDifficulty(diff)
+    setView(mode)
+  }
 
-    // Fire confetti
-    const duration = 3000;
-    const end = Date.now() + duration;
-
-    (function frame() {
-      confetti({
-        particleCount: 5,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 },
-        colors: ['#016DF7', '#5243C2', '#FFD150', '#FF8CA4']
-      });
-      confetti({
-        particleCount: 5,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 },
-        colors: ['#016DF7', '#5243C2', '#FFD150', '#FF8CA4']
-      });
-
-      if (Date.now() < end) {
-        requestAnimationFrame(frame);
-      }
-    }());
+  const handleViewDetail = (gameId) => {
+    setDetailGameId(gameId)
+    setView('detail')
   }
 
   return (
     <div style={{
-      width: '100%',
-      maxWidth: '600px',
-      padding: '20px',
-      display: 'flex',
-      flexDirection: 'column',
       minHeight: '100vh',
-      margin: '0 auto'
+      position: 'relative',
+      backgroundImage: `url(${slothBg})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed'
     }}>
-      <header style={{ textAlign: 'center', marginBottom: '10px', zIndex: 10, marginTop: '20px' }}>
-        <h1 style={{ fontFamily: 'Outfit, sans-serif', fontSize: '2.5rem', fontWeight: 700, textShadow: '0 4px 10px rgba(0,0,0,0.2)' }}>
-          Glass Guess
-        </h1>
-        {/* Difficulty Selector */}
-        <div style={{ marginTop: '10px' }}>
-          <select
-            value={difficulty}
-            onChange={handleDifficultyChange}
-            className="glass-btn"
-            style={{ padding: '8px 16px', fontSize: '0.9rem', borderRadius: '12px', background: 'rgba(255,255,255,0.2)' }}
-          >
-            {[4, 5, 6, 7, 8].map(d => (
-              <option key={d} value={d} style={{ color: '#333' }}>{d} Digits</option>
-            ))}
-          </select>
-        </div>
-      </header>
+      {/* Overlay for readability */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        background: 'rgba(0,0,0,0.3)',
+        zIndex: 0
+      }} />
 
-      <main className="glass-panel" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '20px', position: 'relative', zIndex: 10, marginBottom: '20px' }}>
-        <InputGrid input={input} setInput={setInput} onSubmit={handleSubmit} disabled={isWon} />
+      {/* Content */}
+      <div style={{ position: 'relative', zIndex: 1 }}>
+        <SlothMascot />
 
-        <div style={{ textAlign: 'center', margin: '10px 0' }}>
-          <button className="glass-btn" onClick={handleSubmit} disabled={isWon}>
-            GUESS
-          </button>
-        </div>
+        {view === 'menu' && (
+          <div style={{
+            width: '100%',
+            maxWidth: '600px',
+            padding: '20px',
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '100vh',
+            margin: '0 auto',
+            justifyContent: 'center'
+          }}>
+            <header style={{ textAlign: 'center', marginBottom: '40px' }}>
+              <h1 style={{
+                fontFamily: 'Outfit, sans-serif',
+                fontSize: '3rem',
+                fontWeight: 700,
+                textShadow: '0 4px 10px rgba(0,0,0,0.5)',
+                marginBottom: '10px'
+              }}>
+                Glass Guess
+              </h1>
+              <p style={{ fontSize: '1rem', opacity: 0.9, textShadow: '0 2px 5px rgba(0,0,0,0.5)' }}>
+                1A1B Number Guessing Game
+              </p>
+            </header>
+            <ModeSelector onSelectMode={handleModeSelect} />
+          </div>
+        )}
 
-        <HistoryList history={history} />
-      </main>
+        {view === 'difficulty-single' && (
+          <div style={{
+            width: '100%',
+            maxWidth: '600px',
+            padding: '20px',
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '100vh',
+            margin: '0 auto',
+            justifyContent: 'center'
+          }}>
+            <div className="glass-panel" style={{ padding: '40px', textAlign: 'center' }}>
+              <button
+                onClick={() => setView('menu')}
+                className="glass-btn"
+                style={{
+                  position: 'absolute',
+                  left: '20px',
+                  top: '20px',
+                  padding: '8px 16px',
+                  fontSize: '0.9rem'
+                }}
+              >
+                ← Back
+              </button>
+              <h2 style={{ fontSize: '2rem', marginBottom: '30px' }}>Choose Difficulty</h2>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                {[4, 5, 6, 7, 8].map(num => (
+                  <button
+                    key={num}
+                    className="glass-btn animate-pop"
+                    onClick={() => handleDifficultySelect(num, 'single')}
+                    style={{
+                      padding: '20px',
+                      fontSize: '1.3rem',
+                      animationDelay: `${(num - 4) * 0.1}s`
+                    }}
+                  >
+                    {num} Digits
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
-      <SlothMascot />
+        {view === 'difficulty-two' && (
+          <div style={{
+            width: '100%',
+            maxWidth: '600px',
+            padding: '20px',
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '100vh',
+            margin: '0 auto',
+            justifyContent: 'center'
+          }}>
+            <div className="glass-panel" style={{ padding: '40px', textAlign: 'center' }}>
+              <button
+                onClick={() => setView('menu')}
+                className="glass-btn"
+                style={{
+                  position: 'absolute',
+                  left: '20px',
+                  top: '20px',
+                  padding: '8px 16px',
+                  fontSize: '0.9rem'
+                }}
+              >
+                ← Back
+              </button>
+              <h2 style={{ fontSize: '2rem', marginBottom: '30px' }}>Choose Difficulty</h2>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                {[4, 5, 6, 7, 8].map(num => (
+                  <button
+                    key={num}
+                    className="glass-btn animate-pop"
+                    onClick={() => handleDifficultySelect(num, 'two-player')}
+                    style={{
+                      padding: '20px',
+                      fontSize: '1.3rem',
+                      animationDelay: `${(num - 4) * 0.1}s`
+                    }}
+                  >
+                    {num} Digits
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
-      {isWon && <VictoryModal onRestart={() => restartGame()} totalWins={totalWins} />}
+        {view === 'single' && (
+          <SinglePlayerGame
+            difficulty={difficulty}
+            onBack={() => setView('menu')}
+          />
+        )}
+
+        {view === 'two-player' && (
+          <TwoPlayerGame
+            difficulty={difficulty}
+            onBack={() => setView('menu')}
+          />
+        )}
+
+        {view === 'history' && (
+          <GameHistory
+            onBack={() => setView('menu')}
+            onViewDetail={handleViewDetail}
+          />
+        )}
+
+        {view === 'detail' && (
+          <HistoryDetail
+            gameId={detailGameId}
+            onBack={() => setView('history')}
+          />
+        )}
+      </div>
     </div>
   )
 }

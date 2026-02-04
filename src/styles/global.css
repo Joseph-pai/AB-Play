@@ -23,13 +23,12 @@
 
 body {
   font-family: 'Outfit', 'Inter', system-ui, sans-serif;
-  background: linear-gradient(135deg, var(--color-blue), var(--color-purple), var(--color-pink));
-  background-size: 400% 400%;
-  animation: gradientBG 15s ease infinite;
   min-height: 100vh;
   color: var(--text-main);
   overflow-x: hidden;
   overflow-y: auto;
+  margin: 0;
+  padding: 0;
 }
 
 @keyframes gradientBG {
