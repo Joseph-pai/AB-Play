@@ -4,7 +4,6 @@ import SinglePlayerGame from './components/SinglePlayerGame'
 import TwoPlayerGame from './components/TwoPlayerGame'
 import GameHistory from './components/GameHistory'
 import HistoryDetail from './components/HistoryDetail'
-import GameRules from './components/GameRules'
 import SlothMascot from './components/SlothMascot'
 import './styles/glass.css'
 import slothBg from './assets/sloth-background.png'
@@ -87,7 +86,6 @@ function App() {
               </p>
             </header>
             <ModeSelector onSelectMode={handleModeSelect} />
-            <GameRules />
           </div>
         )}
 

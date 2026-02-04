@@ -6,10 +6,14 @@ export default function GameRules() {
 
     return (
         <div className="glass-panel" style={{
-            padding: '20px',
-            marginBottom: '20px',
+            padding: '15px 20px',
+            width: '100%',
+            maxWidth: '300px',
             cursor: 'pointer',
-            transition: 'all 0.3s ease'
+            transition: 'all 0.3s ease',
+            background: isExpanded ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.15)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            marginTop: '10px'
         }}
             onClick={() => setIsExpanded(!isExpanded)}
         >

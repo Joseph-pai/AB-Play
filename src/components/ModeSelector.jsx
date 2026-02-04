@@ -1,4 +1,5 @@
 import React from 'react';
+import GameRules from './GameRules';
 import '../styles/glass.css';
 
 export default function ModeSelector({ onSelectMode }) {
@@ -64,6 +65,8 @@ export default function ModeSelector({ onSelectMode }) {
                 📜 遊戲歷史<br />
                 <span style={{ fontSize: '0.9rem', opacity: 0.8 }}>Game History</span>
             </button>
+
+            <GameRules />
         </div>
     );
 }
