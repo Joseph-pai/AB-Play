@@ -5,6 +5,7 @@ import HistoryList from './HistoryList'
 import VictoryModal from './VictoryModal'
 import { generateSecret, calculateResult } from '../utils/gameLogic'
 import { saveGame } from '../utils/historyManager'
+import RewardReveal from './RewardReveal'
 import '../styles/glass.css'
 
 export default function SinglePlayerGame({ difficulty, onBack }) {
@@ -13,6 +14,19 @@ export default function SinglePlayerGame({ difficulty, onBack }) {
     const [history, setHistory] = useState([])
     const [isWon, setIsWon] = useState(false)
     const [totalWins, setTotalWins] = useState(() => Number(localStorage.getItem('glass-guess-wins')) || 0)
+
+    // Reward System State
+    const [puzzleId, setPuzzleId] = useState(() => {
+        let id = localStorage.getItem('glass-guess-puzzle-id');
+        if (!id) {
+            const randomNum = Math.floor(Math.random() * 30) + 1;
+            id = String(randomNum).padStart(2, '0');
+            localStorage.setItem('glass-guess-puzzle-id', id);
+        }
+        return id;
+    });
+
+    const currentProgress = (totalWins % 4); // 0, 1, 2, 3 (shows background progress)
 
     useEffect(() => {
         console.log('Secret (Debug):', secret)
@@ -24,6 +38,14 @@ export default function SinglePlayerGame({ difficulty, onBack }) {
         setHistory([])
         setIsWon(false)
         setInput(Array(len).fill(''))
+
+        // Refresh puzzleId if it was cleared by VictoryModal (round complete)
+        if (!localStorage.getItem('glass-guess-puzzle-id')) {
+            const randomNum = Math.floor(Math.random() * 30) + 1;
+            const newId = String(randomNum).padStart(2, '0');
+            localStorage.setItem('glass-guess-puzzle-id', newId);
+            setPuzzleId(newId);
+        }
     }
 
     const handleSubmit = () => {
@@ -122,10 +144,16 @@ export default function SinglePlayerGame({ difficulty, onBack }) {
             <main className="glass-panel" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '20px', position: 'relative', zIndex: 10, marginBottom: '20px' }}>
                 <InputGrid input={input} setInput={setInput} onSubmit={handleSubmit} disabled={isWon} />
 
-                <div style={{ textAlign: 'center', margin: '10px 0' }}>
-                    <button className="glass-btn" onClick={handleSubmit} disabled={isWon}>
+                <div style={{ textAlign: 'center', margin: '20px 0', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px' }}>
+                    <button className="glass-btn" onClick={handleSubmit} disabled={isWon} style={{ padding: '12px 30px' }}>
                         GUESS
                     </button>
+
+                    {/* Reward Preview */}
+                    <div style={{ transform: 'scale(0.4)', transformOrigin: 'center', margin: '-60px' }}>
+                        <RewardReveal puzzleId={puzzleId} progress={currentProgress} size={150} />
+                        <p style={{ marginTop: '5px', fontSize: '1.5rem', color: 'white', opacity: 0.6 }}>Progress: {currentProgress}/4</p>
+                    </div>
                 </div>
 
                 <HistoryList history={history} />
