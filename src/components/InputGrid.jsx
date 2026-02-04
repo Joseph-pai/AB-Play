@@ -36,9 +36,11 @@ export default function InputGrid({ input, setInput, onSubmit, disabled }) {
         <div style={{
             display: 'grid',
             gridTemplateColumns: `repeat(${input.length}, 1fr)`,
-            gap: input.length > 6 ? '8px' : '12px',
-            maxWidth: input.length > 6 ? '380px' : '320px',
+            gap: input.length > 6 ? '6px' : '10px',
+            width: '100%',
+            maxWidth: input.length > 6 ? 'min(90vw, 420px)' : 'min(90vw, 360px)',
             margin: '20px auto',
+            padding: '0 10px',
             transition: 'all 0.3s ease'
         }}>
             {input.map((val, i) => (
@@ -55,7 +57,8 @@ export default function InputGrid({ input, setInput, onSubmit, disabled }) {
                     onKeyDown={(e) => handleKeyDown(i, e)}
                     style={{
                         height: input.length > 6 ? '50px' : '60px',
-                        fontSize: input.length > 6 ? '1.5rem' : '2rem'
+                        fontSize: input.length > 6 ? '1.5rem' : '2rem',
+                        minWidth: 0
                     }}
                 />
             ))}
