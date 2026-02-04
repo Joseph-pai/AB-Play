@@ -4,6 +4,7 @@ import SinglePlayerGame from './components/SinglePlayerGame'
 import TwoPlayerGame from './components/TwoPlayerGame'
 import GameHistory from './components/GameHistory'
 import HistoryDetail from './components/HistoryDetail'
+import GameRules from './components/GameRules'
 import SlothMascot from './components/SlothMascot'
 import './styles/glass.css'
 import slothBg from './assets/sloth-background.png'
@@ -68,7 +69,7 @@ function App() {
             margin: '0 auto',
             justifyContent: 'center'
           }}>
-            <header style={{ textAlign: 'center', marginBottom: '40px' }}>
+            <header style={{ textAlign: 'center', marginBottom: '30px' }}>
               <h1 style={{
                 fontFamily: 'Outfit, sans-serif',
                 fontSize: '3rem',
@@ -76,12 +77,16 @@ function App() {
                 textShadow: '0 4px 10px rgba(0,0,0,0.5)',
                 marginBottom: '10px'
               }}>
-                Glass Guess
+                猜數字
               </h1>
-              <p style={{ fontSize: '1rem', opacity: 0.9, textShadow: '0 2px 5px rgba(0,0,0,0.5)' }}>
-                1A1B Number Guessing Game
+              <p style={{ fontSize: '1.2rem', opacity: 0.9, textShadow: '0 2px 5px rgba(0,0,0,0.5)' }}>
+                Guess the Number
+              </p>
+              <p style={{ fontSize: '0.9rem', opacity: 0.8, textShadow: '0 2px 5px rgba(0,0,0,0.5)', marginTop: '5px' }}>
+                1A1B 數字推理遊戲 Number Logic Game
               </p>
             </header>
+            <GameRules />
             <ModeSelector onSelectMode={handleModeSelect} />
           </div>
         )}

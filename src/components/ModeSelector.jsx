@@ -13,9 +13,11 @@ export default function ModeSelector({ onSelectMode }) {
             <h2 style={{
                 fontSize: '2rem',
                 marginBottom: '20px',
-                textShadow: '0 4px 10px rgba(0,0,0,0.3)'
+                textShadow: '0 4px 10px rgba(0,0,0,0.3)',
+                textAlign: 'center'
             }}>
-                Choose Game Mode
+                選擇遊戲模式<br />
+                <span style={{ fontSize: '1rem', opacity: 0.8 }}>Choose Game Mode</span>
             </h2>
 
             <button
@@ -28,7 +30,8 @@ export default function ModeSelector({ onSelectMode }) {
                     fontSize: '1.3rem'
                 }}
             >
-                🎮 Single Player
+                🎮 單人模式<br />
+                <span style={{ fontSize: '0.9rem', opacity: 0.8 }}>Single Player</span>
             </button>
 
             <button
@@ -42,7 +45,8 @@ export default function ModeSelector({ onSelectMode }) {
                     animationDelay: '0.1s'
                 }}
             >
-                👥 Two Player
+                👥 雙人模式<br />
+                <span style={{ fontSize: '0.9rem', opacity: 0.8 }}>Two Player</span>
             </button>
 
             <button
@@ -57,7 +61,8 @@ export default function ModeSelector({ onSelectMode }) {
                     animationDelay: '0.2s'
                 }}
             >
-                📜 Game History
+                📜 遊戲歷史<br />
+                <span style={{ fontSize: '0.9rem', opacity: 0.8 }}>Game History</span>
             </button>
         </div>
     );
