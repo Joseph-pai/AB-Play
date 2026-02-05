@@ -8,6 +8,15 @@ import { saveGame } from '../utils/historyManager'
 import RewardReveal from './RewardReveal'
 import '../styles/glass.css'
 
+const AVAILABLE_REWARDS = ['01', '02', '03', '08', '10', '11'];
+const getRandomRewardId = (excludeId = null) => {
+    let choices = AVAILABLE_REWARDS;
+    if (excludeId && choices.length > 1) {
+        choices = choices.filter(id => id !== excludeId);
+    }
+    return choices[Math.floor(Math.random() * choices.length)];
+};
+
 export default function SinglePlayerGame({ difficulty, onBack }) {
     const [secret, setSecret] = useState(() => generateSecret(difficulty))
     const [input, setInput] = useState(Array(difficulty).fill(''))
@@ -18,23 +27,15 @@ export default function SinglePlayerGame({ difficulty, onBack }) {
     // Reward System State
     const [puzzleId, setPuzzleId] = useState(() => {
         let id = localStorage.getItem('glass-guess-puzzle-id');
-        if (!id) {
-            const randomNum = Math.floor(Math.random() * 30) + 1;
-            id = String(randomNum).padStart(2, '0');
+        if (!id || !AVAILABLE_REWARDS.includes(id)) {
+            id = getRandomRewardId();
             localStorage.setItem('glass-guess-puzzle-id', id);
         }
         return id;
     });
 
     const handleCycleReward = () => {
-        // Randomly pick a new ID (try to make it different from current)
-        let newId;
-        const currentId = puzzleId;
-        do {
-            const randomNum = Math.floor(Math.random() * 30) + 1;
-            newId = String(randomNum).padStart(2, '0');
-        } while (newId === currentId && 30 > 1); // Only loop if there's more than one possibility
-
+        const newId = getRandomRewardId(puzzleId);
         setPuzzleId(newId);
         localStorage.setItem('glass-guess-puzzle-id', newId);
     };
@@ -54,8 +55,7 @@ export default function SinglePlayerGame({ difficulty, onBack }) {
 
         // Refresh puzzleId if it was cleared by VictoryModal (round complete)
         if (!localStorage.getItem('glass-guess-puzzle-id')) {
-            const randomNum = Math.floor(Math.random() * 30) + 1;
-            const newId = String(randomNum).padStart(2, '0');
+            const newId = getRandomRewardId();
             localStorage.setItem('glass-guess-puzzle-id', newId);
             setPuzzleId(newId);
         }
