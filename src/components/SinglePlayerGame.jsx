@@ -26,6 +26,19 @@ export default function SinglePlayerGame({ difficulty, onBack }) {
         return id;
     });
 
+    const handleCycleReward = () => {
+        // Randomly pick a new ID (try to make it different from current)
+        let newId;
+        const currentId = puzzleId;
+        do {
+            const randomNum = Math.floor(Math.random() * 30) + 1;
+            newId = String(randomNum).padStart(2, '0');
+        } while (newId === currentId && 30 > 1); // Only loop if there's more than one possibility
+
+        setPuzzleId(newId);
+        localStorage.setItem('glass-guess-puzzle-id', newId);
+    };
+
     const currentProgress = (totalWins % 4); // 0, 1, 2, 3 (shows background progress)
 
     useEffect(() => {
@@ -150,7 +163,22 @@ export default function SinglePlayerGame({ difficulty, onBack }) {
                     </button>
 
                     {/* Reward Preview */}
-                    <div style={{ transform: 'scale(0.4)', transformOrigin: 'center', margin: '-60px' }}>
+                    <div
+                        onClick={handleCycleReward}
+                        onTouchEnd={(e) => {
+                            // Prevent ghost clicks if needed, but onTouchEnd is generally safe for mobile
+                            handleCycleReward();
+                        }}
+                        style={{
+                            transform: 'scale(0.4)',
+                            transformOrigin: 'center',
+                            margin: '-60px',
+                            cursor: 'pointer',
+                            userSelect: 'none',
+                            WebkitTapHighlightColor: 'transparent'
+                        }}
+                        title="Click to change image"
+                    >
                         <RewardReveal puzzleId={puzzleId} progress={currentProgress} size={150} />
                         <p style={{ marginTop: '5px', fontSize: '1.5rem', color: 'white', opacity: 0.6 }}>Progress: {currentProgress}/4</p>
                     </div>
