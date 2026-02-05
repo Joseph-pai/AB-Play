@@ -7,8 +7,8 @@ import { generateSecret, calculateResult } from '../utils/gameLogic'
 import { saveGame } from '../utils/historyManager'
 import RewardReveal from './RewardReveal'
 import '../styles/glass.css'
+import AVAILABLE_REWARDS from '../constants/rewardList.json'
 
-const AVAILABLE_REWARDS = ['01', '02', '03', '08', '10', '11'];
 const getRandomRewardId = (excludeId = null) => {
     let choices = AVAILABLE_REWARDS;
     if (excludeId && choices.length > 1) {
