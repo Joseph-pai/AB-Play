@@ -157,7 +157,7 @@ export default function SinglePlayerGame({ difficulty, onBack }) {
             <main className="glass-panel" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '20px', position: 'relative', zIndex: 10, marginBottom: '20px' }}>
                 <InputGrid input={input} setInput={setInput} onSubmit={handleSubmit} disabled={isWon} />
 
-                <div style={{ textAlign: 'center', margin: '20px 0', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '20px' }}>
+                <div style={{ textAlign: 'center', margin: '20px 0', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '20px' }}>
                     <button className="glass-btn" onClick={handleSubmit} disabled={isWon} style={{ padding: '12px 30px' }}>
                         GUESS
                     </button>
@@ -170,9 +170,9 @@ export default function SinglePlayerGame({ difficulty, onBack }) {
                             handleCycleReward();
                         }}
                         style={{
-                            transform: 'scale(0.4)',
+                            transform: 'scale(0.8)',
                             transformOrigin: 'center',
-                            margin: '-60px',
+                            margin: '-10px',
                             cursor: 'pointer',
                             userSelect: 'none',
                             WebkitTapHighlightColor: 'transparent'
